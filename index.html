@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Modern Ecommerce</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		body {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 100%);
+			background-size: 400% 400%;
+			animation: gradientShift 15s ease infinite;
+			font-family: 'Quicksand', 'Montserrat', Arial, sans-serif;
+			min-height: 100vh;
+		}
+		@keyframes gradientShift {
+			0% { background-position: 0% 50%; }
+			50% { background-position: 100% 50%; }
+			100% { background-position: 0% 50%; }
+		}
+		.navbar {
+			backdrop-filter: blur(10px);
+			background: rgba(255, 255, 255, 0.1) !important;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+			box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+		}
+		.navbar-brand {
+			font-weight: 800;
+			font-size: 1.8em;
+			letter-spacing: 2px;
+			color: #fff !important;
+			text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+			filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+		}
+		.btn-warning, .btn-success {
+			backdrop-filter: blur(10px);
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+			border: none !important;
+			color: #fff !important;
+			font-weight: 700;
+			box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+			transition: all 0.3s ease;
+			padding: 10px 20px;
+			border-radius: 25px;
+		}
+		.btn-warning:hover, .btn-success:hover {
+			background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+		}
+		.hero {
+			background: rgba(255, 255, 255, 0.15);
+			backdrop-filter: blur(20px);
+			color: #fff;
+			padding: 80px 0 60px 0;
+			text-align: center;
+			border-radius: 0 0 50px 50px;
+			margin-bottom: 40px;
+			box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+			border: 1px solid rgba(255, 255, 255, 0.18);
+		}
+		.hero h1 {
+			font-size: 3.5em;
+			font-weight: 800;
+			margin-bottom: 20px;
+			letter-spacing: 2px;
+			text-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+			background: linear-gradient(45deg, #fff, #f0f0f0);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+		}
+		.hero p {
+			font-size: 1.4em;
+			margin-bottom: 0;
+			font-weight: 600;
+			text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+		}
+		.category-bar {
+			display: flex;
+			gap: 15px;
+			justify-content: center;
+			margin-bottom: 40px;
+			flex-wrap: wrap;
+		}
+		.category-btn {
+			background: rgba(255, 255, 255, 0.25);
+			backdrop-filter: blur(10px);
+			border: 2px solid rgba(255, 255, 255, 0.3);
+			color: #fff;
+			border-radius: 30px;
+			padding: 12px 32px;
+			font-weight: 700;
+			font-size: 1em;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+			text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+		}
+		.category-btn.active, .category-btn:hover {
+			background: rgba(255, 255, 255, 0.45);
+			transform: translateY(-3px) scale(1.05);
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+			border-color: rgba(255, 255, 255, 0.6);
+		}
+		.card {
+			border: none;
+			border-radius: 25px;
+			overflow: hidden;
+			background: rgba(255, 255, 255, 0.9);
+			backdrop-filter: blur(10px);
+			box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+			transition: all 0.3s ease;
+			border: 1px solid rgba(255, 255, 255, 0.3);
+		}
+		.card:hover {
+			transform: translateY(-10px) scale(1.03);
+			box-shadow: 0 15px 40px rgba(31, 38, 135, 0.35);
+			background: rgba(255, 255, 255, 0.95);
+		}
+		.card-img-top {
+			width: 100%;
+			height: 200px;
+			object-fit: cover;
+			transition: transform 0.3s ease;
+		}
+		.card:hover .card-img-top {
+			transform: scale(1.1);
+		}
+		.card-title {
+			font-weight: 800;
+			font-size: 1.3em;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+		}
+		.card-text { 
+			color: #555;
+			font-weight: 600;
+		}
+		.badge.bg-info {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+			color: #fff;
+			font-weight: 700;
+			font-size: 1em;
+			padding: 8px 15px;
+			border-radius: 20px;
+			box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+		}
+		.btn-primary, .btn-success {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+			border: none !important;
+			color: #fff !important;
+			font-weight: 700;
+			letter-spacing: 1px;
+			padding: 10px 20px;
+			border-radius: 25px;
+			box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+			transition: all 0.3s ease;
+		}
+		.btn-primary:hover, .btn-success:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+			background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+		}
+		.admin-panel {
+			margin-top: 40px;
+			background: rgba(255, 255, 255, 0.2);
+			backdrop-filter: blur(10px);
+			padding: 25px;
+			border-radius: 20px;
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+			color: #fff;
+		}
+		.admin-panel h2 {
+			text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+		}
+		footer {
+			background: rgba(255, 255, 255, 0.15);
+			backdrop-filter: blur(20px);
+			color: #fff;
+			text-align: center;
+			padding: 35px 0;
+			margin-top: 60px;
+			border-radius: 50px 50px 0 0;
+			font-size: 1.15em;
+			letter-spacing: 1px;
+			box-shadow: 0 -8px 32px rgba(31, 38, 135, 0.2);
+			border-top: 1px solid rgba(255, 255, 255, 0.2);
+			text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+		}
+		.modal-content {
+			background: rgba(255, 255, 255, 0.98) !important;
+			backdrop-filter: blur(20px);
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			border-radius: 20px;
+		}
+		.modal-title {
+			color: #333 !important;
+			font-weight: 700;
+		}
+		.form-control {
+			border: 2px solid rgba(102, 126, 234, 0.3);
+			border-radius: 15px;
+			padding: 12px 15px;
+		}
+		.form-control:focus {
+			border-color: #667eea;
+			box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+		}
+	</style>
+</head>
+<body>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div class="container-fluid">
+				<a class="navbar-brand d-flex align-items-center" href="#">
+					<img src="images/logo1.jpg" alt="Logo" style="height:40px;vertical-align:middle;margin-right:12px;border-radius:12px;box-shadow:0 2px 8px #fff6;">
+					Dearoutfit
+				</a>
+				<button class="btn btn-warning me-2" onclick="showLogin()">Login Admin</button>
+				<button class="btn btn-success" onclick="showCart()">Keranjang (<span id="cart-count">0</span>)</button>
+			</div>
+		</nav>
+		<section class="hero">
+			<div class="container">
+				<h1>Selamat Datang di Dearoutfit</h1>
+				<p>Temukan fashion terbaru, sepatu, dan aksesoris dengan harga terbaik!</p>
+			</div>
+		</section>
+		<div class="category-bar mb-4">
+			<button class="category-btn active" onclick="filterCategory('all')">Semua</button>
+			<button class="category-btn" onclick="filterCategory('fashion')">Fashion</button>
+			<button class="category-btn" onclick="filterCategory('shoes')">Sepatu</button>
+			<button class="category-btn" onclick="filterCategory('accessories')">Aksesoris</button>
+		</div>
+		<div class="container py-2">
+			<div class="row" id="products"></div>
+			<div id="admin-panel" class="admin-panel" style="display:none">
+				<h2 class="mb-3">Admin Panel</h2>
+				<p>Selamat datang, <b>Admin</b>!</p>
+				<button class="btn btn-danger" onclick="logoutAdmin()">Logout</button>
+			</div>
+		</div>
+		<footer>
+			<div class="container">
+				&copy; 2025 DearOutfit - Dibuat Dengan Kelompok 5
+			</div>
+		</footer>
+
+		<!-- Cart Modal -->
+		<div class="modal fade" id="cart-modal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="cartModalLabel">Keranjang Belanja</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<ul class="list-group mb-3" id="cart-list"></ul>
+						<p id="cart-total" class="fw-bold"></p>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-primary" onclick="showPayment()">Checkout</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Payment Modal -->
+		<div class="modal fade" id="payment-modal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="paymentModalLabel">Pembayaran</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body text-center">
+						<img src="images/main1.jpg" alt="Pembayaran" style="width:120px;border-radius:16px;box-shadow:0 2px 8px #007bff22;margin-bottom:18px;">
+						<h6 class="mb-3">Konfirmasi Pesanan Anda</h6>
+						<div id="payment-detail" class="mb-3"></div>
+						<div class="mb-3">
+							<label class="fw-bold mb-2">Pilih Metode Pembayaran:</label><br>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="payMethod" id="payTransfer" value="transfer" checked>
+								<label class="form-check-label" for="payTransfer">Transfer Bank/E-Wallet</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="payMethod" id="payQris" value="qris">
+								<label class="form-check-label" for="payQris">QRIS</label>
+							</div>
+						</div>
+					<div id="qris-section" style="display:none;">
+						<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=DEAROUTFIT-QRIS-2025" alt="QRIS" style="margin-bottom:8px;border-radius:12px;box-shadow:0 2px 8px #007bff22;">
+						<div class="text-muted mb-2">Scan QRIS untuk pembayaran</div>
+					</div>
+						<div class="alert alert-info">Pembayaran dapat dilakukan melalui transfer bank, e-wallet, atau QRIS.<br>Pesanan Anda akan diproses setelah pembayaran.</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-success" onclick="doCheckout()">Bayar & Pesan</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+		<!-- Login Modal -->
+		<div class="modal fade" id="login-modal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="loginModalLabel">Login Admin</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<input type="text" id="admin-user" class="form-control mb-2" placeholder="Username">
+						<input type="password" id="admin-pass" class="form-control mb-2" placeholder="Password">
+						<p id="login-error" class="text-danger"></p>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-warning" onclick="loginAdmin()">Login</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="index.js"></script>
+</body>
+</html>
