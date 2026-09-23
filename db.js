@@ -1,24 +1,23 @@
-// Konfigurasi koneksi database (untuk backend Node.js + MySQL)
-// File ini adalah contoh untuk server backend terpisah
-
 const mysql = require('mysql2');
 
-// Konfigurasi koneksi database
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'bintangca',
-  password: 'Bintang@123123',
-  database: 'ecommerce',
-  port: 3306
+// Ubah lewat environment variable saat dijalankan di lab.
+const db = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'ecommerce',
+  port: Number(process.env.DB_PORT || 3306),
+  waitForConnections: true,
+  connectionLimit: 10
 });
 
-// Koneksi ke database
-db.connect((err) => {
+db.getConnection((err, connection) => {
   if (err) {
-    console.error('Error connecting to database:', err);
+    console.warn('MySQL belum terhubung. Aplikasi tetap bisa memakai localStorage:', err.code);
     return;
   }
   console.log('Connected to MySQL database');
+  connection.release();
 });
 
 module.exports = db;

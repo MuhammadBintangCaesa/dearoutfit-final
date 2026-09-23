@@ -1,16 +1,29 @@
--- Database Setup untuk DearOutfit E-commerce
--- Jalankan di DBeaver dengan user rahel1
+-- SETUP DATABASE DEAROUTFIT UNTUK LAB
+-- Jalankan SELURUH file ini sekali saja di DBeaver sebagai root/admin.
+-- File ini membuat database, akun aplikasi, tabel, dan data awal.
+-- NPM install sebelum running di lab.
+-- DB_HOST=localhost DB_USER=bintanc DB_PASSWORD='bintang123' DB_NAME=ecommerce npm start 
+-- ipconfig cek untuk mengetahui IP address localhost jika diperlukan.
 
 -- Buat database
 CREATE DATABASE IF NOT EXISTS ecommerce;
 USE ecommerce;
 
--- Tabel orders untuk menyimpan pesanan
+-- Akun MySQL yang dipakai server Node.js saat demo di lab.
+CREATE USER IF NOT EXISTS 'bintanc'@'localhost' IDENTIFIED BY 'bintang123';
+ALTER USER 'bintanc'@'localhost' IDENTIFIED BY 'bintang123';
+GRANT ALL PRIVILEGES ON ecommerce.* TO 'bintanc'@'localhost';
+FLUSH PRIVILEGES;
+
+-- Tabel pesanan: dipakai user checkout dan dashboard admin.
 CREATE TABLE IF NOT EXISTS orders (
   id INT AUTO_INCREMENT PRIMARY KEY,
   order_id VARCHAR(50) NOT NULL UNIQUE,
+  customer_id INT NOT NULL,
+  customer_name VARCHAR(100) NOT NULL,
   items TEXT NOT NULL,
-  status VARCHAR(50) DEFAULT 'Menunggu',
+  payment_method VARCHAR(20) NOT NULL DEFAULT 'transfer',
+  status VARCHAR(50) DEFAULT 'Menunggu Verifikasi',
   time DATETIME DEFAULT CURRENT_TIMESTAMP,
   total DECIMAL(10, 2) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -19,7 +32,7 @@ CREATE TABLE IF NOT EXISTS orders (
   INDEX idx_created (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabel products untuk menyimpan data produk
+-- Tabel produk: data awal katalog.
 CREATE TABLE IF NOT EXISTS products (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -33,8 +46,8 @@ CREATE TABLE IF NOT EXISTS products (
   INDEX idx_category (category)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Insert data produk
-INSERT INTO products (name, price, category, image_url, stock, description) VALUES
+-- Data produk awal.
+INSERT IGNORE INTO products (name, price, category, image_url, stock, description) VALUES
 ('T-Shirt', 120000, 'fashion', 'images/tshirt.jpg', 50, 'T-Shirt casual berkualitas tinggi'),
 ('Jeans', 220000, 'fashion', 'images/jeans.jpg', 30, 'Jeans denim premium fit'),
 ('Sneakers', 350000, 'shoes', 'images/sneakers.jpg', 25, 'Sneakers sporty dan nyaman'),
@@ -43,7 +56,7 @@ INSERT INTO products (name, price, category, image_url, stock, description) VALU
 ('Hoodie', 200000, 'fashion', 'images/hoodie.jpg', 35, 'Hoodie hangat dan stylish'),
 ('Cap', 80000, 'accessories', 'images/cap.jpg', 100, 'Topi casual trendy');
 
--- Tabel admin_users untuk autentikasi admin
+-- Akun admin untuk login ke dashboard.
 CREATE TABLE IF NOT EXISTS admin_users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(50) NOT NULL UNIQUE,
@@ -52,11 +65,20 @@ CREATE TABLE IF NOT EXISTS admin_users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Insert admin default
-INSERT INTO admin_users (username, password, email) VALUES
+-- Username admin: admin | password: 12345
+INSERT IGNORE INTO admin_users (username, password, email) VALUES
 ('admin', '12345', 'admin@modernshop.com');
 
--- Tampilkan summary
+-- Tabel akun customer: data dari form daftar user.
+CREATE TABLE IF NOT EXISTS customers (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Ringkasan untuk memastikan setup berhasil.
 SELECT 'Database ecommerce berhasil dibuat!' as Status;
 SELECT COUNT(*) as Total_Products FROM products;
 SELECT COUNT(*) as Total_Orders FROM orders;

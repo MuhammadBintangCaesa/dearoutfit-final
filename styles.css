@@ -1,0 +1,63 @@
+/* ===== Halaman utama Dearoutfit ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Latar belakang dan font global. */
+body {
+  min-height: 100vh;
+  font-family: 'Quicksand', 'Montserrat', Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2 25%, #f093fb 50%, #4facfe);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Navigasi dan tombol utama. */
+.navbar {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, .1) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, .2);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, .15);
+}
+.navbar-brand { color: #fff !important; font-size: 1.8em; font-weight: 800; letter-spacing: 2px; text-shadow: 2px 2px 8px rgba(0,0,0,.3); }
+.brand-logo { height: 40px; margin-right: 12px; vertical-align: middle; border-radius: 12px; box-shadow: 0 2px 8px #fff6; }
+.btn-warning, .btn-success, .btn-primary {
+  padding: 10px 20px; border: 0 !important; border-radius: 25px; color: #fff !important;
+  font-weight: 700; letter-spacing: 1px; background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, .4); transition: all .3s ease;
+}
+.btn-warning:hover, .btn-success:hover, .btn-primary:hover { transform: translateY(-2px); background: linear-gradient(135deg, #764ba2, #667eea) !important; }
+
+/* Area sambutan dan filter kategori. */
+.hero { padding: 80px 0 60px; margin-bottom: 40px; text-align: center; color: #fff; border: 1px solid rgba(255,255,255,.18); border-radius: 0 0 50px 50px; background: rgba(255,255,255,.15); backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(31,38,135,.2); }
+.hero h1 { margin-bottom: 20px; font-size: 3.5em; font-weight: 800; letter-spacing: 2px; text-shadow: 3px 3px 10px rgba(0,0,0,.3); }
+.hero p { margin: 0; font-size: 1.4em; font-weight: 600; }
+.category-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 40px; }
+.category-btn { padding: 12px 32px; color: #fff; cursor: pointer; font-size: 1em; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,.2); border: 2px solid rgba(255,255,255,.3); border-radius: 30px; background: rgba(255,255,255,.25); backdrop-filter: blur(10px); transition: all .3s ease; }
+.category-btn.active, .category-btn:hover { transform: translateY(-3px) scale(1.05); background: rgba(255,255,255,.45); border-color: rgba(255,255,255,.6); }
+
+/* Kartu produk. */
+.card { overflow: hidden; border: 1px solid rgba(255,255,255,.3); border-radius: 25px; background: rgba(255,255,255,.9); box-shadow: 0 8px 32px rgba(31,38,135,.2); transition: all .3s ease; }
+.card:hover { transform: translateY(-10px) scale(1.03); background: rgba(255,255,255,.95); box-shadow: 0 15px 40px rgba(31,38,135,.35); }
+.card-img-top { width: 100%; height: 200px; object-fit: cover; transition: transform .3s ease; }
+.card:hover .card-img-top { transform: scale(1.1); }
+.card-title { font-size: 1.3em; font-weight: 800; color: #654da9; }
+.card-text { color: #555; font-weight: 600; }
+.badge.bg-info { padding: 8px 15px; color: #fff; font-size: 1em; font-weight: 700; border-radius: 20px; background: linear-gradient(135deg, #667eea, #764ba2) !important; }
+
+/* Footer dan form pada modal. */
+footer { margin-top: 60px; padding: 35px 0; color: #fff; text-align: center; font-size: 1.15em; letter-spacing: 1px; border-top: 1px solid rgba(255,255,255,.2); border-radius: 50px 50px 0 0; background: rgba(255,255,255,.15); backdrop-filter: blur(20px); }
+.modal-content { border: 1px solid rgba(255,255,255,.3); border-radius: 20px; background: rgba(255,255,255,.98) !important; }
+.modal-title { color: #333 !important; font-weight: 700; }
+.form-control { padding: 12px 15px; border: 2px solid rgba(102,126,234,.3); border-radius: 15px; }
+.form-control:focus { border-color: #667eea; box-shadow: 0 0 0 .2rem rgba(102,126,234,.25); }
+.payment-image { width: 120px; margin-bottom: 18px; border-radius: 16px; box-shadow: 0 2px 8px #007bff22; }
+.qris-image { margin-bottom: 8px; border-radius: 12px; box-shadow: 0 2px 8px #007bff22; }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2.2em; }
+  .navbar .container-fluid { gap: 10px; }
+}

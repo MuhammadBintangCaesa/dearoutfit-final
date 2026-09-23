@@ -1,0 +1,10 @@
+/* ===== Tampilan dashboard admin ===== */
+body { min-height: 100vh; font-family: 'Quicksand', 'Montserrat', Arial, sans-serif; background: linear-gradient(120deg, #6c63ff, #007bff); }
+.dashboard-box { max-width: 700px; margin: 60px auto; padding: 40px 36px 32px; border-radius: 24px; background: #fff; box-shadow: 0 8px 32px #6c63ff22; }
+.dashboard-title { margin-bottom: 18px; color: #6c63ff; text-align: center; font-size: 2em; font-weight: 700; letter-spacing: 1px; }
+.btn-logout { color: #fff; font-weight: 700; border: 0; border-radius: 12px; background: linear-gradient(90deg, #6c63ff, #007bff); }
+.orders-section { margin-top: 32px; padding: 24px 18px; border-radius: 16px; background: #f3f6fa; }
+.orders-title { margin-bottom: 16px; color: #007bff; font-size: 1.3em; font-weight: 700; }
+.order-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; padding: 16px 18px; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px #007bff22; }
+.order-info { color: #333; font-size: 1em; }
+.order-status { color: #28a745; font-size: .98em; font-weight: 700; }

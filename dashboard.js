@@ -1,166 +1,50 @@
-// API Configuration
-const API_URL = 'http://localhost:3000/api';
-let useDatabase = false;
+const API_URL = '/api';
+let databaseReady = false;
+const rupiah = value => `Rp ${Number(value).toLocaleString('id-ID')}`;
 
-// Check apakah backend server aktif
+function logout() { localStorage.removeItem('adminLoggedIn'); window.location.href = 'index.html'; }
+
 async function checkBackend() {
-	try {
-		const response = await fetch(`${API_URL}/health`);
-		useDatabase = response.ok;
-		console.log(useDatabase ? '✅ Backend connected' : '⚠️ Using localStorage');
-	} catch (error) {
-		useDatabase = false;
-		console.log('⚠️ Backend not available, using localStorage');
-	}
+  try { const response = await fetch(`${API_URL}/health`); databaseReady = response.ok && (await response.json()).database; }
+  catch (_) { databaseReady = false; }
 }
 
-function logout() {
-	window.location.href = 'index.html';
-}
-
-// Tampilkan pesanan dari database atau localStorage
 async function renderOrders() {
-	const ordersList = document.getElementById('orders-list');
-	let orders = [];
-
-	if (useDatabase) {
-		// Ambil dari database
-		try {
-			const response = await fetch(`${API_URL}/orders`);
-			const result = await response.json();
-			if (result.success) {
-				orders = result.orders;
-				console.log('✅ Orders loaded from database');
-			} else {
-				throw new Error('Failed to load orders');
-			}
-		} catch (error) {
-			console.error('❌ Database error, falling back to localStorage:', error);
-			orders = JSON.parse(localStorage.getItem('orders') || '[]');
-		}
-	} else {
-		// Ambil dari localStorage
-		orders = JSON.parse(localStorage.getItem('orders') || '[]');
-	}
-
-	if (orders.length === 0) {
-		ordersList.innerHTML = '<div class="text-center text-muted">Belum ada pesanan.</div>';
-		return;
-	}
-
-	ordersList.innerHTML = '';
-	orders.forEach((order, idx) => {
-		let statusColor = order.status === 'Telah Dibayar' ? '#28a745' : (order.status === 'Menunggu' ? '#ffc107' : (order.status === 'Pesanan Telah Selesai' ? '#007bff' : '#dc3545'));
-		ordersList.innerHTML += `
-			<div class="order-card">
-				<div class="order-info">
-					${order.order_id || order.id} - ${order.items}<br>
-					<span style='font-size:0.9em;color:#888'>${order.time}</span><br>
-					<span class='fw-bold text-success'>Total: Rp ${order.total ? Number(order.total).toLocaleString() : '0'}</span>
-				</div>
-				<div>
-					<span class="order-status" style="color:${statusColor}">${order.status}</span>
-					${order.status === 'Menunggu' ? `<button class='btn btn-sm btn-success ms-2' onclick='verifyOrder(${useDatabase ? order.id : idx})'>Verifikasi Pembayaran</button>` : ''}
-					${order.status === 'Telah Dibayar' ? `<button class='btn btn-sm btn-primary ms-2' onclick='finishOrder(${useDatabase ? order.id : idx})'>Pesanan Selesai</button>` : ''}
-				</div>
-			</div>
-		`;
-	});
+  const ordersList = document.getElementById('orders-list');
+  let orders = [];
+  try {
+    orders = databaseReady ? (await (await fetch(`${API_URL}/orders`)).json()).orders : JSON.parse(localStorage.getItem('orders') || '[]');
+  } catch (_) { ordersList.innerHTML = '<div class="text-danger">Gagal memuat pesanan.</div>'; return; }
+  if (!orders.length) { ordersList.innerHTML = '<div class="text-center text-muted">Belum ada pesanan.</div>'; return; }
+  // Tombol aksi berubah mengikuti status pesanan saat ini.
+  ordersList.innerHTML = orders.map((order, index) => {
+    const id = databaseReady ? order.id : index;
+    const date = new Date(order.created_at || order.time).toLocaleString('id-ID');
+    const verify = order.status === 'Menunggu Verifikasi' ? `<button class="btn btn-sm btn-success ms-2" onclick="updateStatus(${id}, 'Telah Dibayar')">Verifikasi Pembayaran</button>` : '';
+    const finish = order.status === 'Telah Dibayar' ? `<button class="btn btn-sm btn-primary ms-2" onclick="updateStatus(${id}, 'Pesanan Selesai')">Tandai Selesai</button>` : '';
+    return `<div class="order-card"><div class="order-info"><b>${order.order_id}</b> · ${order.customer_name || 'User'}<br>${order.items}<br><small>${date} · ${String(order.payment_method || 'transfer').toUpperCase()}</small><br><span class="fw-bold text-success">Total: ${rupiah(order.total)}</span></div><div class="text-end"><span class="order-status">${order.status}</span><br>${verify}${finish}<button class="btn btn-sm btn-outline-danger ms-2 mt-2" onclick="deleteOrder(${id})">Hapus</button></div></div>`;
+  }).join('');
 }
 
-// Verifikasi pembayaran
-async function verifyOrder(id) {
-	if (useDatabase) {
-		// Update di database
-		try {
-			const response = await fetch(`${API_URL}/order/${id}`, {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ status: 'Telah Dibayar' })
-			});
-			const result = await response.json();
-			if (result.success) {
-				console.log('✅ Order verified in database');
-				renderOrders();
-			}
-		} catch (error) {
-			console.error('❌ Database error:', error);
-			alert('Gagal verifikasi pesanan');
-		}
-	} else {
-		// Update di localStorage
-		let orders = JSON.parse(localStorage.getItem('orders') || '[]');
-		if (orders[id]) {
-			orders[id].status = 'Telah Dibayar';
-			localStorage.setItem('orders', JSON.stringify(orders));
-			renderOrders();
-		}
-	}
+async function updateStatus(id, status) {
+  // Admin memverifikasi pembayaran lalu menandai pesanan selesai.
+  try {
+    if (databaseReady) await fetch(`${API_URL}/orders/${id}/status`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
+    else { const orders = JSON.parse(localStorage.getItem('orders') || '[]'); orders[id].status = status; localStorage.setItem('orders', JSON.stringify(orders)); }
+    renderOrders();
+  } catch (_) { alert('Gagal mengubah status pesanan.'); }
 }
 
-// Tandai pesanan selesai
-async function finishOrder(id) {
-	if (useDatabase) {
-		// Update di database
-		try {
-			const response = await fetch(`${API_URL}/order/${id}`, {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ status: 'Pesanan Telah Selesai' })
-			});
-			const result = await response.json();
-			if (result.success) {
-				console.log('✅ Order finished in database');
-				renderOrders();
-			}
-		} catch (error) {
-			console.error('❌ Database error:', error);
-			alert('Gagal menyelesaikan pesanan');
-		}
-	} else {
-		// Update di localStorage
-		let orders = JSON.parse(localStorage.getItem('orders') || '[]');
-		if (orders[id]) {
-			orders[id].status = 'Pesanan Telah Selesai';
-			localStorage.setItem('orders', JSON.stringify(orders));
-			renderOrders();
-		}
-	}
+async function deleteOrder(id) {
+  if (!confirm('Hapus pesanan ini?')) return;
+  try {
+    if (databaseReady) await fetch(`${API_URL}/orders/${id}`, { method: 'DELETE' });
+    else { const orders = JSON.parse(localStorage.getItem('orders') || '[]'); orders.splice(id, 1); localStorage.setItem('orders', JSON.stringify(orders)); }
+    renderOrders();
+  } catch (_) { alert('Gagal menghapus pesanan.'); }
 }
 
-// Clear pesanan lunas
-async function clearPaidOrders() {
-	if (useDatabase) {
-		// Hapus dari database
-		try {
-			const response = await fetch(`${API_URL}/orders`);
-			const result = await response.json();
-			if (result.success) {
-				const paidOrders = result.orders.filter(o => o.status === 'Telah Dibayar');
-				for (const order of paidOrders) {
-					await fetch(`${API_URL}/order/${order.id}`, {
-						method: 'DELETE'
-					});
-				}
-				console.log('✅ Paid orders cleared from database');
-				renderOrders();
-				alert('Pesanan lunas telah dihapus dan ditandai selesai/diantar!');
-			}
-		} catch (error) {
-			console.error('❌ Database error:', error);
-		}
-	} else {
-		// Hapus dari localStorage
-		let orders = JSON.parse(localStorage.getItem('orders') || '[]');
-		orders = orders.filter(order => order.status !== 'Telah Dibayar');
-		localStorage.setItem('orders', JSON.stringify(orders));
-		renderOrders();
-		alert('Pesanan lunas telah dihapus dan ditandai selesai/diantar!');
-	}
-}
-
-// Inisialisasi saat halaman dimuat
 (async function init() {
-	await checkBackend();
-	await renderOrders();
+  if (localStorage.getItem('adminLoggedIn') !== 'true') { window.location.href = 'login.html'; return; }
+  await checkBackend(); renderOrders();
 })();
